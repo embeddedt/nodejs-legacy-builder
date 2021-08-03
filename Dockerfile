@@ -42,5 +42,8 @@ RUN ./configure --prefix=/crossprefix
 RUN make -j2 install
 WORKDIR /
 ENV LD_LIBRARY_PATH=/crossprefix/lib64/:/crossprefix/lib/:$LD_LIBRARY_PATH
+# https://github.com/nodejs/node/issues/30077#issuecomment-702808628
+ENV LDFLAGS=-lrt
+ENV CPPFLAGS=-D__STDC_FORMAT_MACROS
 COPY build-node /
 CMD /build-node

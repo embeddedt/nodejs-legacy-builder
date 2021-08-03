@@ -14,4 +14,4 @@ jobs:
       # Ignore the failure of a step and avoid terminating the job.
       continue-on-error: true
     - run: docker build -t nodejs-old-builder .
-    - run: docker run --rm -e NODEJS_VERSION=14.17.4 -v /node_out:node_out nodejs-old-builder
+    - run: docker run --rm -e NODEJS_VERSION=14.17.4 -v node_out:/node_out nodejs-old-builder
