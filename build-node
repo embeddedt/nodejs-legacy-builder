@@ -1,0 +1,41 @@
+#!/bin/bash
+set -e
+echo "Unofficial Node.js builder for old libc implementations"
+echo "-------------------------------------------------------"
+echo
+
+DEFAULT_OUTPUT_DIR="$(pwd)/node_out"
+NODEJS_BINARY_OUTPUT_DIR="${NODEJS_BINARY_OUTPUT_DIR:-$DEFAULT_OUTPUT_DIR}"
+NUM_PARALLEL_JOBS="${NUM_PARALLEL_JOBS:-$(nproc)}"
+
+if [ "x$NODEJS_VERSION" == "x" ]; then
+echo "Missing NODEJS_VERSION in environment."
+exit 1
+fi
+echo "Will build $NODEJS_VERSION and output to $NODEJS_BINARY_OUTPUT_DIR"
+NODEJS_SRCDIR=node-v${NODEJS_VERSION}
+NODEJS_TARBALL=${NODEJS_SRCDIR}.tar.gz
+if ! [ -f "$NODEJS_TARBALL" ]; then
+echo "Downloading Node.js ${NODEJS_VERSION}..."
+wget -O $NODEJS_TARBALL --no-check-certificate https://nodejs.org/dist/v${NODEJS_VERSION}/${NODEJS_TARBALL}
+else
+echo "Assuming provided tarball (${NODEJS_TARBALL}) is valid."
+fi
+if ! [ -d "$NODEJS_SRCDIR" ]; then
+echo "Extracting ${NODEJS_TARBALL}..."
+tar xzf $NODEJS_TARBALL
+else
+echo "Using existing source directory."
+fi
+echo "Configuring in ${NODEJS_SRCDIR}..."
+cd $NODEJS_SRCDIR
+./configure --enable-static --partly-static
+echo "Building with ${NUM_PARALLEL_JOBS} jobs..."
+sleep 1 # allow the user to read the message
+make -j${NUM_PARALLEL_JOBS} binary SKIP_XZ=1
+NODEJS_OUTPUT_FILE=$(pwd)/$(echo node-v*.tar.gz)
+echo "Done building. Output tarball is $NODEJS_OUTPUT_FILE, copying to $NODEJS_BINARY_OUTPUT_DIR."
+cd ..
+mkdir -p $NODEJS_BINARY_OUTPUT_DIR
+cp $NODEJS_OUTPUT_FILE $NODEJS_BINARY_OUTPUT_DIR/
+echo "All done."
