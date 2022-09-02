@@ -22,6 +22,7 @@ jobs:
         name: nodejsbuilder
         path: /tmp/nodejsbuilder.tar
   build-node:
+    runs-on: ubuntu-20.04
     needs: build-docker
     strategy:
         fail-fast: false
