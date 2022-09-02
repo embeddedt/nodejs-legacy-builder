@@ -11,12 +11,6 @@ jobs:
         node_version: ['14.20.0','16.17.0','18.7.0']
     steps:
     - uses: actions/checkout@v2
-    # In this step, this action saves a list of existing images,
-    # the cache is created without them in the post run.
-    # It also restores the cache if it exists.
-    - uses: satackey/action-docker-layer-caching@v0.0.11
-      # Ignore the failure of a step and avoid terminating the job.
-      continue-on-error: true
     - run: docker build -t nodejs-old-builder .
     - run: docker run --rm -e NODEJS_VERSION=${{ matrix.node_version }} -v ./node_out:/node_out nodejs-old-builder
     - uses: actions/upload-artifact@v3
