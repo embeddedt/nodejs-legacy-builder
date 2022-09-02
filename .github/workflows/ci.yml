@@ -18,3 +18,7 @@ jobs:
       continue-on-error: true
     - run: docker build -t nodejs-old-builder .
     - run: docker run --rm -e NODEJS_VERSION=${{ matrix.node_version }} -v node_out:/node_out nodejs-old-builder
+    - uses: actions/upload-artifact@v3
+      with:
+        name: release-tarball
+        path: node_out/
