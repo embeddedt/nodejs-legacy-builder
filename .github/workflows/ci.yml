@@ -40,5 +40,5 @@ jobs:
       run: docker run --rm -e NODEJS_VERSION=${{ matrix.node_version }} -v /node_out:/node_out node-js-old-builder:latest
     - uses: actions/upload-artifact@v3
       with:
-        name: release-tarball
+        name: release-tarball-${{ matrix.node_version }}
         path: /node_out/
