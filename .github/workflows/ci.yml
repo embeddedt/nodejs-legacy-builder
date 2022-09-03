@@ -37,7 +37,7 @@ jobs:
     - name: Load Docker image
       run: docker load --input /tmp/nodejsbuilder.tar
     - name: Build Node.js ${{ matrix.node_version }}
-      run: docker run --rm -e NODEJS_VERSION=${{ matrix.node_version }} -v ./node_out:/node_out nodejs-old-builder:latest
+      run: docker run --rm -e NODEJS_VERSION=${{ matrix.node_version }} -v ./node_out:/node_out node-js-old-builder:latest
     - uses: actions/upload-artifact@v3
       with:
         name: release-tarball
